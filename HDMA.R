@@ -100,7 +100,7 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
     index<-which(P_hdi<=0.05)
 	if(verbose)  message("Non-zero ",method, " beta estimate(s) of mediator(s) found: ", paste0(names(index), collapse = ","))
 	if(length(index)==0)
-	stop("No mediatiors identified !")
+	stop("No mediatior is identified !")
        ID_test <- ID[index]  
    if(family == "binomial")
     {
