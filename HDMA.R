@@ -3,9 +3,9 @@
 ####### https://github.com/YinanZheng/HIMA/blob/master/R/utils.R.  
 ####### There is need to download the script of utils.R from the website and then load into your workplace of R. 
 ####### The hdma function is aimed at doing high-dimensional mediation analysis.
-hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian","binomial"), 
-        method = c("lasso", "ridge"), topN = NULL, parallel = FALSE, ncore = 1, 
-        verbose = FALSE, ...){	
+####### R version: R/3.5.1.
+hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian","binomial"), method = c("lasso", "ridge"), topN = NULL,
+		  parallel = FALSE, ncore = 1, verbose = FALSE, ...){	
 ####################################################################################################################################
 #########################################                   Function body                ###########################################
 ####################################################################################################################################
