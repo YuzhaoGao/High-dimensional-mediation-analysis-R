@@ -97,7 +97,7 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
 	if (method == "lasso") fit <- lasso.proj(XM_COV, Y, family = family) else fit <- ridge.proj(XM_COV, Y, family = family)
     }
     P_hdi<-fit$pval[1:length(ID)]
-    index<-which(P_hdi<0.05)
+    index<-which(P_hdi<=0.05)
 	if(verbose)  message("Non-zero ",method, " beta estimate(s) of mediator(s) found: ", paste0(names(index), collapse = ","))
        ID_test <- ID[index]  
    if(family == "binomial")
@@ -109,13 +109,11 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
     alpha_est <- himasis(NA, M[,ID_test, drop = FALSE], X, COV.XM, glm.family = "gaussian", modelstatement = "Mone ~ X", 
 	                  parallel = FALSE, ncore = ncore, verbose, tag = "site-by-site ordinary least squares estimation")
     }   
-	beta_P<-P_hdi[index]*length(index)
-	beta_P[beta_P>1]<-1
+	beta_P<-P_hdi[index]
 	beta_hat<-fit$bhat[index]              # the estimator for beta
 	alpha_hat<-as.numeric(alpha_est[1, ])
 	ab_est<-beta_hat*alpha_hat
-	alpha_P<-alpha_est[2,]*length(ID_test)
-	alpha_P[alpha_P>1]<-1
+	alpha_P<-alpha_est[2,]
 	PA <- rbind(beta_P,alpha_P)
 	P_value <- apply(PA,2,max)
 ###################################################################################################################################    
