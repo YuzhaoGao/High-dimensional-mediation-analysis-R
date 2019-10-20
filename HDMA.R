@@ -12,29 +12,31 @@ hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian"
 ####### INPUT
 ####### X : Independent variable that is a vector
 ####### Y : Dependent variable that is a vector and can be either continuous or binary variable
-####### M : High-dimensional mediatorsa that can be either data.frame or matrix. Rows represent samples, columns represent variables
+####### M : High-dimensional mediators that can be either data.frame or matrix. Rows represent samples, columns represent variables
 ####### COV.XM : a data.frame or matrix of covariates dataset for testing the association X ~ M. Default = NULL. 
 #######          If the covariates contain mixed types, please make sure all categorical variables are properly transformed into factor
 #######          type.
 ####### COV.MY : a data.frame or matrix of covariates dataset for testing the association Y ~ M. Using covariates should be careful.
-#######          If not specified, the covariates for Y ~ M are the same with that of M ~ X.
-####### family : either 'gaussian' or 'binomial', relying on the type of outcome (Y). See hdi package
-####### method : either "lasso.project" or "ridge.project" to estimate the effect from M -> Y
-####### topN : an integer can set the number of top markers by the method of sure independent screening. Default = NULL.
+#######          If the cavariables are not specified, the covariates for Y ~ M are the same with that of M ~ X.
+####### family : either 'gaussian' or 'binomial', relying on the type of outcome (Y). See hdi package.
+####### method : either "lasso" or "ridge" to estimate the effect of M -> Y.
+####### topN : an integer can be used to set the number of top markers by the method of sure independent screening. Default = NULL.
 #######        If topN is NULL, it will be either ceiling(n/log(n)) if family = 'gaussian', or ceiling(n/(2*log(n))) if family = 
 #######	      'binomial', where n is the sample size. If the sample size is greater than topN (pre-specified or calculated), all
 #######        markers will be harbored in the test.
-####### parallel : logical parameter. The parameter enables your computer to do parallel calculation. Default = FALSE.
-####### ncore : the parameter can set the number of cores to run parallel computing when parallel == TRUE. By default max number of
-#######   	cores available in the machine will be utilized.
+####### parallel : logical parameter. The parameter can be employed to enable your computer to do parallel calculation. Default = FALSE.
+####### ncore : the parameter can be used to set the number of cores to run parallel computing when parallel == TRUE. By default max
+########	number of cores available in the machine will be utilized.
 ####### verbose : logical. Default = FALSE.
 ####### ... : other arguments passed to hdi.
 ####################################################################################################################################
 ####### Values 
-####### alpha : the coefficient reflects the association of X –> M.
-####### beta : the coefficient reflects the association of M –> Y, note that the effect is adjusted by X.
-####### gamma : the coefficient reflects the linkage of X –> Y, it can represent the total effect.
-###### alpha*beta : the estimator of mediation effect.
+####### alpha : the coefficient can reflect the association of X –> M, note that the effect is adjusted by covariables when covariables
+#######	are not NULL.
+####### beta : the coefficient can reflect the association of M –> Y, note that the effect is adjusted by X. When covariables are not
+#######	NULL, the effect is adjusted by X and covariables. 
+####### gamma : the coefficient can reflect the linkage of X –> Y, it can represent the total effect.
+####### alpha*beta : the estimator of mediation effect.
 ####### %total effect : alpha*beta/gamma*100. The proportion of the mediation effect is out of the total effect.
 ####### p-values : joint significant test for mediators.
 ####################################################################################################################################
