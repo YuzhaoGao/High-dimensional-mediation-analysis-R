@@ -1,8 +1,8 @@
-####### Loading three internal functions before using hdma function to do mediation analysis
-####### Three internal functions established by YinanZheng (2016) and posted in the website that is
-####### https://github.com/YinanZheng/HIMA/blob/master/R/utils.R 
-####### There is just need to download utils.R from the website and then loading in your workplace of R. 
-####### hdma function for high-dimensional mediation analysis
+####### Load three internal functions before using hdma function to do mediation analysis.
+####### Three internal functions are established by YinanZheng (2016) and posted in the website of 
+####### https://github.com/YinanZheng/HIMA/blob/master/R/utils.R.  
+####### There is need to download the script of utils.R from the website and then load into your workplace of R. 
+####### The hdma function is aimed at doing high-dimensional mediation analysis.
 hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian","binomial"), 
         method = c("lasso", "ridge"), topN = NULL, parallel = FALSE, ncore = 1, 
         verbose = FALSE, ...){	
@@ -11,32 +11,32 @@ hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian"
 ####################################################################################################################################
 ####### INPUT
 ####### X : Independent variable that is a vector
-####### Y : Dependent variable that is a vector and can be either continuous or binary
+####### Y : Dependent variable that is a vector and can be either continuous or binary variable
 ####### M : High-dimensional mediatorsa that can be either data.frame or matrix. Rows represent samples, columns represent variables
-####### COV.XM : a data.frame or matrix of covariates dataset for testing the association . Default = NULL 
-#######          If the covariates contain mixed data types, please make sure all categorical variables are properly formatted as factor
+####### COV.XM : a data.frame or matrix of covariates dataset for testing the association X ~ M. Default = NULL. 
+#######          If the covariates contain mixed types, please make sure all categorical variables are properly transformed into factor
 #######          type.
-####### COV.MY : a data.frame or matrix of covariates dataset for testing the association Y ~ M. Using covariates should be carefully.
-#######          If not specified, the covariates for Y ~ M are the same with that of M ~ X
+####### COV.MY : a data.frame or matrix of covariates dataset for testing the association Y ~ M. Using covariates should be careful.
+#######          If not specified, the covariates for Y ~ M are the same with that of M ~ X.
 ####### family : either 'gaussian' or 'binomial', relying on the type of outcome (Y). See hdi package
 ####### method : either "lasso.project" or "ridge.project" to estimate the effect from M -> Y
-####### topN : an integer specifying the number of top markers from sure independent screening. Default = NULL
-#######        If NULL, topN will be either ceiling(n/log(n)) if family = 'gaussian', or ceiling(n/(2*log(n))) if family = 'binomial', 
-#######        where n is the sample size. If the sample size is greater than topN (pre-specified or calculated), all mediators will be
-#######        included in the test.
-####### parallel : logical. Enable parallel computing feature? Default = TRUE.
-####### ncore : number of cores to run parallel computing Valid when parallel == TRUE. By default max number of cores available in the
-#######         machine will be utilized.
-####### verbose : logical. Should the function be verbose? Default = FALSE.
+####### topN : an integer can set the number of top markers by the method of sure independent screening. Default = NULL.
+#######        If topN is NULL, it will be either ceiling(n/log(n)) if family = 'gaussian', or ceiling(n/(2*log(n))) if family = 
+#######	      'binomial', where n is the sample size. If the sample size is greater than topN (pre-specified or calculated), all
+#######        markers will be harbored in the test.
+####### parallel : logical parameter. The parameter enables your computer to do parallel calculation. Default = FALSE.
+####### ncore : the parameter can set the number of cores to run parallel computing when parallel == TRUE. By default max number of
+#######   	cores available in the machine will be utilized.
+####### verbose : logical. Default = FALSE.
 ####### ... : other arguments passed to hdi.
 ####################################################################################################################################
 ####### Values 
-####### alpha : coefficient estimates of X –> M.
-####### beta : coefficient estimates of M –> Y, note that the effect is adjusted by X.
-####### gamma : coefficient estimates of X –> Y, it can reflect the total effect.
-###### alpha*beta : mediation effect.
-####### %total effect : alpha*beta/gamma.  The proportion of the mediation effect out of the total effect.
-####### p-values : statistical significance of the mediator.
+####### alpha : the coefficient reflects the association of X –> M.
+####### beta : the coefficient reflects the association of M –> Y, note that the effect is adjusted by X.
+####### gamma : the coefficient reflects the linkage of X –> Y, it can represent the total effect.
+###### alpha*beta : the estimator of mediation effect.
+####### %total effect : alpha*beta/gamma*100. The proportion of the mediation effect is out of the total effect.
+####### p-values : joint significant test for mediators.
 ####################################################################################################################################
 ####### checking the necessary packages 
 pkgs <- list("hdi","MASS","doParallel", "foreach","iterators")
@@ -99,6 +99,8 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
     P_hdi<-fit$pval[1:length(ID)]
     index<-which(P_hdi<=0.05)
 	if(verbose)  message("Non-zero ",method, " beta estimate(s) of mediator(s) found: ", paste0(names(index), collapse = ","))
+	if(length(index)==0)
+	stop("No mediatiors identified !")
        ID_test <- ID[index]  
    if(family == "binomial")
     {
