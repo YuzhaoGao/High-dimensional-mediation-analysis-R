@@ -40,7 +40,9 @@ hdma <- function (X, Y, M, COV.XM = NULL, COV.MY = COV.XM, family = c("gaussian"
 ####################################################################################################################################
 ####### checking the necessary packages 
 pkgs <- list("hdi","MASS","doParallel", "foreach","iterators")
-lapply(pkgs, require, character.only = T)
+checking<-unlist(lapply(pkgs, require, character.only = T))
+	if(any(checking==F))
+     stop("Please install the necessary packages first!")	
 family <- match.arg(family)
 method <- match.arg(method)
 if (parallel & (ncore == 1)) ncore <- parallel::detectCores()
@@ -49,9 +51,9 @@ p <- ncol(M)
 if (is.null(topN)) {
       if (family == "binomial") d <- ceiling(n/(2*log(n))) else d <- ceiling(2*n/log(n)) 
     } else {
-      d <- topN  # the number of top mediators that associated with exposure (X)
+      d <- topN      # the number of top mediators that associated with independent variable (X)
     }
-    d <- min(p, d) # if d > p select all mediators
+    d <- min(p, d)   # if d > p select all mediators
 #############################################################################################################################
 ################################           Step-1 Sure Independent Screening (SIS)          #################################
 #############################################################################################################################
@@ -95,8 +97,8 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
 	if (method == "lasso") fit <- lasso.proj(XM_COV, Y, family = family) else fit <- ridge.proj(XM_COV, Y, family = family)
     }
     P_hdi<-fit$pval[1:length(ID)]
-    index<-which(P_hdi<=0.05)
-	# if(verbose)  message("Non-zero ",method, " beta estimate(s) of mediator(s) found: ", paste0(names(ID_1_non), collapse = ","))
+    index<-which(P_hdi<0.05)
+	if(verbose)  message("Non-zero ",method, " beta estimate(s) of mediator(s) found: ", paste0(names(index), collapse = ","))
        ID_test <- ID[index]  
    if(family == "binomial")
     {
@@ -117,7 +119,7 @@ message("Step 2: High-dimensional inference (", method, ") ...", "     (", Sys.t
 	PA <- rbind(beta_P,alpha_P)
 	P_value <- apply(PA,2,max)
 ###################################################################################################################################    
-###############################################            STEP 3   Report results         ########################################
+###############################          STEP 3   Computing the propotion of mediation effect          ############################
 ###################################################################################################################################
  if (is.null(COV.MY)) {
      YX <- data.frame(Y = Y, X = X)
